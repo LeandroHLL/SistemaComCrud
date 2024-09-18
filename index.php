@@ -1,10 +1,14 @@
-<html><head><base href="https://github.com/websim-creation-engine/" />
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login e Cadastro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/imask/6.4.3/imask.min.js"></script>
 </head>
+
 <body class="bg-gray-100 h-screen flex items-center justify-center">
     <div class="bg-white p-8 rounded-lg shadow-md w-96">
         <!-- Abas de navegação -->
@@ -13,41 +17,61 @@
             <button id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 rounded-tr-lg">Cadastro</button>
         </div>
 
+        <!-- Mensagens de Status -->
+        <?php
+        if (isset($_GET['msg'])) {
+            $msg = $_GET['msg'];
+            $messages = [
+                'login_sucesso' => ['text-green-500', 'Login realizado com sucesso!'],
+                'login_falha' => ['text-red-500', 'Falha no login. Verifique suas credenciais.'],
+                'cadastro_sucesso' => ['text-green-500', 'Cadastro realizado com sucesso!'],
+                'cadastro_falha' => ['text-red-500', 'Falha no cadastro. Tente novamente.'],
+                'usuario_nao_encontrado' => ['text-red-500', 'Usuário não encontrado!'],
+                'email_ou_cpf_existente' => ['text-red-500', 'Email ou CPF já cadastrados!'],
+            ];
+            if (isset($messages[$msg])) {
+                $color = $messages[$msg][0];
+                $text = $messages[$msg][1];
+                echo "<p class='status-message $color mb-4'>{$text}</p>";
+            }
+        }
+        ?>
+
         <!-- Formulário de Login -->
-        <form id="loginForm" class="space-y-4">
+        <form id="loginForm" class="space-y-4" action="processar_login.php" method="POST">
             <div>
                 <label for="loginEmail" class="block mb-1">Email</label>
-                <input type="email" id="loginEmail" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="email" id="loginEmail" name="email" class="w-full px-3 py-2 border rounded-md" required>
             </div>
             <div>
                 <label for="loginPassword" class="block mb-1">Senha</label>
-                <input type="password" id="loginPassword" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="password" id="loginPassword" name="senha" class="w-full px-3 py-2 border rounded-md" required>
             </div>
             <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Entrar</button>
         </form>
 
         <!-- Formulário de Cadastro (inicialmente oculto) -->
-        <form id="registerForm" class="space-y-4 hidden">
+        <form id="registerForm" class="space-y-4 hidden" action="processar_cadastro.php" method="POST">
             <div>
                 <label for="registerName" class="block mb-1">Nome</label>
-                <input type="text" id="registerName" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="text" id="registerName" name="nome" class="w-full px-3 py-2 border rounded-md" required>
             </div>
             <div>
                 <label for="registerEmail" class="block mb-1">Email</label>
-                <input type="email" id="registerEmail" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="email" id="registerEmail" name="email" class="w-full px-3 py-2 border rounded-md" required>
             </div>
             <div>
                 <label for="registerPhone" class="block mb-1">Telefone</label>
-                <input type="tel" id="registerPhone" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="tel" id="registerPhone" name="telefone" class="w-full px-3 py-2 border rounded-md" required>
             </div>
             <div>
                 <label for="registerCPF" class="block mb-1">CPF</label>
-                <input type="text" id="registerCPF" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="text" id="registerCPF" name="cpf" class="w-full px-3 py-2 border rounded-md" required>
                 <p id="cpfError" class="text-red-500 text-sm mt-1 hidden">CPF inválido</p>
             </div>
             <div>
                 <label for="registerPassword" class="block mb-1">Senha</label>
-                <input type="password" id="registerPassword" class="w-full px-3 py-2 border rounded-md" required>
+                <input type="password" id="registerPassword" name="senha" class="w-full px-3 py-2 border rounded-md" required>
             </div>
             <div>
                 <label for="confirmPassword" class="block mb-1">Confirmar Senha</label>
@@ -58,6 +82,23 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Função para remover mensagens após 5 segundos
+            function removeMessages() {
+                const messages = document.querySelectorAll('.status-message');
+                messages.forEach(message => {
+                    setTimeout(() => {
+                        message.style.opacity = '0';
+                        setTimeout(() => {
+                            message.remove();
+                        }, 500); // Tempo para animação de fade-out
+                    }, 5000); // Tempo até começar a animação de fade-out
+                });
+            }
+
+            // Chamar a função para remover mensagens se existirem
+            removeMessages();
+        });
         const loginTab = document.getElementById('loginTab');
         const registerTab = document.getElementById('registerTab');
         const loginForm = document.getElementById('loginForm');
@@ -79,22 +120,6 @@
             loginTab.classList.remove('bg-blue-500', 'text-white');
             registerForm.classList.remove('hidden');
             loginForm.classList.add('hidden');
-        });
-
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Aqui você pode adicionar a lógica para processar o login
-            console.log('Login submetido');
-        });
-
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            if (validateCPF(cpfInput.value)) {
-                // Aqui você pode adicionar a lógica para processar o cadastro
-                console.log('Cadastro submetido');
-            } else {
-                document.getElementById('cpfError').classList.remove('hidden');
-            }
         });
 
         // Máscara para o campo de telefone
@@ -146,4 +171,4 @@
             }
         });
     </script>
-</body></html>
+</body>
