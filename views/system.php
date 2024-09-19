@@ -114,7 +114,7 @@ $message = isset($_GET['message']) ? $_GET['message'] : '';
                                 <td class="border px-4 py-2"><?= $user['telefone'] ?></td>
                                 <td class="border px-4 py-2"><?= $user['cpf'] ?></td>
                                 <td class="border px-4 py-2 flex space-x-2">
-                                    <a href="editar.php?id=<?= $user['id'] ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded">
+                                    <a href="../controllers/editUser.php?id=<?= $user['id'] ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <a href="deleteUser.php?id=<?= $user['id'] ?>" class="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" onclick="return confirm('Tem certeza que deseja excluir este usuário?');">
