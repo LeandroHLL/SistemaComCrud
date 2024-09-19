@@ -67,4 +67,28 @@ class UserModel
             return false;
         }
     }
+    public function getUsers() {
+        $sql = "SELECT id, nome, email, telefone, cpf FROM usuarios";
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function deleteUser($id)
+{
+    $sql = "DELETE FROM usuarios WHERE id = ?";
+    if ($stmt = $this->conn->prepare($sql)) {
+        $stmt->bind_param("i", $id);
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+        } else {
+            echo "Erro ao executar a consulta: " . $stmt->error;
+            $stmt->close();
+            return false;
+        }
+    } else {
+        echo "Erro na preparação da consulta: " . $this->conn->error;
+        return false;
+    }
+}
 }

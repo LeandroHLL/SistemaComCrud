@@ -1,4 +1,18 @@
-<html>
+<?php
+require_once '../config/Database.php';
+require_once '../controllers/UserController.php';
+
+$database = new Database();
+$conn = $database->getConnection();
+$userController = new UserController($conn);
+$users = $userController->listUsers();
+
+// Recebendo mensagens do GET
+$message = isset($_GET['message']) ? $_GET['message'] : '';
+?>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
@@ -8,8 +22,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript" charset="utf8"
-        src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js"></script>
 </head>
 
 <body class="bg-gray-100 h-screen flex overflow-hidden">
@@ -17,10 +30,8 @@
     <aside class="bg-gray-800 text-white w-64 min-h-screen p-4">
         <nav>
             <div class="flex items-center mb-8">
-                <svg class="h-8 w-8 fill-current text-blue-400 mr-2" viewBox="0 0 54 54"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z" />
+                <svg class="h-8 w-8 fill-current text-blue-400 mr-2" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z" />
                 </svg>
                 <span class="text-xl font-bold">AdminSys</span>
             </div>
@@ -73,27 +84,61 @@
             </div>
         </div>
 
+        <!-- Mensagem de feedback -->
+        <?php if ($message): ?>
+            <div id="feedback-message" class="mb-4 p-4 bg-green-100 text-green-700 border border-green-400 rounded">
+                <?= htmlspecialchars($message) ?>
+            </div>
+        <?php endif; ?>
+
         <!-- Tabela de Usuários -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="p-6">
-                <table id="usersTable" class="w-full">
-                    <thead>
+                <table id="usersTable" class="min-w-full table-auto">
+                    <thead class="bg-gray-200">
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Telefone</th>
-                            <th>CPF</th>
-                            <th>Ações</th>
+                            <th class="px-4 py-2">ID</th>
+                            <th class="px-4 py-2">Nome</th>
+                            <th class="px-4 py-2">Email</th>
+                            <th class="px-4 py-2">Telefone</th>
+                            <th class="px-4 py-2">CPF</th>
+                            <th class="px-4 py-2">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Os dados serão preenchidos dinamicamente pelo DataTables -->
+                        <?php foreach ($users as $user): ?>
+                            <tr class="hover:bg-gray-100">
+                                <td class="border px-4 py-2"><?= $user['id'] ?></td>
+                                <td class="border px-4 py-2"><?= $user['nome'] ?></td>
+                                <td class="border px-4 py-2"><?= $user['email'] ?></td>
+                                <td class="border px-4 py-2"><?= $user['telefone'] ?></td>
+                                <td class="border px-4 py-2"><?= $user['cpf'] ?></td>
+                                <td class="border px-4 py-2 flex space-x-2">
+                                    <a href="editar.php?id=<?= $user['id'] ?>" class="bg-yellow-500 hover:bg-yellow-600 text-white py-1 px-2 rounded">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="deleteUser.php?id=<?= $user['id'] ?>" class="bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded" onclick="return confirm('Tem certeza que deseja excluir este usuário?');">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
+
+    <script>
+        $(document).ready(function() {
+            $('#usersTable').DataTable();
+
+            // Ocultar a mensagem após 5 segundos
+            setTimeout(function() {
+                $('#feedback-message').fadeOut();
+            }, 5000);
+        });
+    </script>
 </body>
 
 </html>
