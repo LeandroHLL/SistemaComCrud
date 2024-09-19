@@ -29,7 +29,7 @@
         ?>
 
         <!-- Formulário de Cadastro -->
-        <form id="registerForm" class="space-y-4" action="controllers/RegisterController.php" method="POST">
+        <form id="registerForm" class="space-y-4" action="../controllers/RegController.php" method="POST">
             <div>
                 <label for="registerName" class="block mb-1">Nome</label>
                 <input type="text" id="registerName" name="nome" class="w-full px-3 py-2 border rounded-md" required>
