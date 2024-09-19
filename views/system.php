@@ -64,7 +64,7 @@
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Usuários Cadastrados</h1>
             <div class="flex items-center space-x-4">
-                <a href="../index.php" class="bg-blue-500 hover:bg-green-600 text-white py-2 px-4 rounded-full">
+                <a href="cadastro2.php" class="bg-blue-500 hover:bg-green-600 text-white py-2 px-4 rounded-full">
                     <i class="fas fa-plus mr-2"></i>Cadastrar Usuário
                 </a>
                 <a href="../index.php" class="bg-gray-500 hover:bg-red-600 text-white py-2 px-4 rounded-full">
