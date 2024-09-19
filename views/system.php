@@ -6,8 +6,6 @@ $database = new Database();
 $conn = $database->getConnection();
 $userController = new UserController($conn);
 $users = $userController->listUsers();
-
-// Recebendo mensagens do GET
 $message = isset($_GET['message']) ? $_GET['message'] : '';
 ?>
 
@@ -133,7 +131,6 @@ $message = isset($_GET['message']) ? $_GET['message'] : '';
         $(document).ready(function() {
             $('#usersTable').DataTable();
 
-            // Ocultar a mensagem após 5 segundos
             setTimeout(function() {
                 $('#feedback-message').fadeOut();
             }, 5000);
