@@ -67,6 +67,9 @@
                 <button id="openModal" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-full">
                     <i class="fas fa-plus mr-2"></i>Novo Usuário
                 </button>
+                <a href="../index.php" class="bg-gray-500 hover:bg-gray-600 text-white py-2 px-4 rounded-full">
+                    <i class="fas fa-home mr-2"></i>Voltar ao Índice
+                </a>
             </div>
         </div>
 
@@ -411,9 +414,7 @@
             });
         });
     </script>
-
-
-
+    
 </body>
 
 </html>
