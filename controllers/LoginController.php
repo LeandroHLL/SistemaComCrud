@@ -3,15 +3,18 @@ session_start();
 require_once '../models/UserModel.php';
 require_once '../config/database.php';
 
-class LoginController {
+class LoginController
+{
     private $userModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->userModel = new UserModel($db->getConnection());
     }
 
-    public function login() {
+    public function login()
+    {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $email = $_POST['email'];
             $senha = $_POST['senha'];
@@ -33,4 +36,3 @@ class LoginController {
 
 $controller = new LoginController();
 $controller->login();
-?>

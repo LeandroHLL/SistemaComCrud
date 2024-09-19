@@ -2,15 +2,18 @@
 require_once '../models/UserModel.php';
 require_once '../config/database.php';
 
-class RegisterController {
+class RegisterController
+{
     private $userModel;
 
-    public function __construct() {
+    public function __construct()
+    {
         $db = new Database();
         $this->userModel = new UserModel($db->getConnection());
     }
 
-    public function register() {
+    public function register()
+    {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $nome = $_POST['nome'];
             $email = $_POST['email'];
@@ -35,4 +38,3 @@ class RegisterController {
 
 $controller = new RegisterController();
 $controller->register();
-?>

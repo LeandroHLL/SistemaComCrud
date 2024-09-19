@@ -169,21 +169,30 @@
         </div>
     </div>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#usersTable').DataTable({
                 ajax: {
                     url: 'get_users.php',
                     dataSrc: ''
                 },
-                columns: [
-                    { data: 'id' },
-                    { data: 'nome' },
-                    { data: 'email' },
-                    { data: 'telefone' },
-                    { data: 'cpf' },
+                columns: [{
+                        data: 'id'
+                    },
+                    {
+                        data: 'nome'
+                    },
+                    {
+                        data: 'email'
+                    },
+                    {
+                        data: 'telefone'
+                    },
+                    {
+                        data: 'cpf'
+                    },
                     {
                         data: null,
-                        render: function (data, type, row) {
+                        render: function(data, type, row) {
                             return `
                             <button class="text-blue-500 hover:text-blue-700 mr-2 view-btn" data-id="${row.id}">
                                 <i class="fas fa-eye"></i>
@@ -202,33 +211,33 @@
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
                 }
             });
-    
+
             // Abrir Modal
-            $('#openModal').click(function () {
+            $('#openModal').click(function() {
                 $('#userModalTitle').text('Cadastro de Novo Usuário');
                 $('#userForm').attr('data-mode', 'add');
                 $('#userForm').attr('data-id', '');
                 $('#userForm')[0].reset();
                 $('#userModal').removeClass('hidden');
             });
-    
+
             // Fechar Modal
-            $('#closeModal').click(function () {
+            $('#closeModal').click(function() {
                 $('#userModal').addClass('hidden');
             });
-    
+
             // Fechar Modal de Visualização
-            $('#closeViewModal').click(function () {
+            $('#closeViewModal').click(function() {
                 $('#viewUserModal').addClass('hidden');
             });
-    
+
             // Submeter formulário
-            $('#userForm').submit(function (e) {
+            $('#userForm').submit(function(e) {
                 e.preventDefault();
                 if (!validatePasswords()) {
                     return;
                 }
-    
+
                 var formData = {
                     nome: $('#nome').val(),
                     email: $('#email').val(),
@@ -236,7 +245,7 @@
                     cpf: $('#cpf').val(),
                     senha: $('#senha').val()
                 };
-    
+
                 var mode = $(this).attr('data-mode');
                 if (mode === 'edit') {
                     var id = parseInt($(this).attr('data-id'));
@@ -244,18 +253,18 @@
                 } else {
                     addNewUser(formData);
                 }
-    
+
                 $('#userModal').addClass('hidden');
                 this.reset();
             });
-    
+
             function addNewUser(userData) {
                 $.ajax({
                     url: 'add_user.php',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify(userData),
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             table.ajax.reload();
                         } else {
@@ -264,14 +273,17 @@
                     }
                 });
             }
-    
+
             function updateUser(id, userData) {
                 $.ajax({
                     url: 'update_user.php',
                     method: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({ id: id, ...userData }),
-                    success: function (response) {
+                    data: JSON.stringify({
+                        id: id,
+                        ...userData
+                    }),
+                    success: function(response) {
                         if (response.success) {
                             table.ajax.reload();
                             alert('Usuário atualizado com sucesso!');
@@ -281,21 +293,23 @@
                     }
                 });
             }
-    
+
             // Função para visualizar detalhes do usuário
             function viewUser(id) {
                 // Implementar a lógica para visualizar detalhes do usuário
                 console.log('Visualizar usuário', id);
             }
-    
+
             // Função para editar o usuário
             function editUser(id) {
                 // Buscar dados do usuário
                 $.ajax({
                     url: 'get_user.php',
                     method: 'GET',
-                    data: { id: id },
-                    success: function (response) {
+                    data: {
+                        id: id
+                    },
+                    success: function(response) {
                         if (response.success) {
                             var user = response.data;
                             $('#nome').val(user.nome);
@@ -314,7 +328,7 @@
                     }
                 });
             }
-    
+
             // Função para deletar o usuário
             function deleteUser(id) {
                 if (confirm('Tem certeza que deseja deletar o usuário ' + id + '?')) {
@@ -322,8 +336,10 @@
                         url: 'delete_user.php',
                         method: 'POST',
                         contentType: 'application/json',
-                        data: JSON.stringify({ id: id }),
-                        success: function (response) {
+                        data: JSON.stringify({
+                            id: id
+                        }),
+                        success: function(response) {
                             if (response.success) {
                                 table.ajax.reload();
                                 alert('Usuário deletado com sucesso!');
@@ -334,15 +350,15 @@
                     });
                 }
             }
-    
+
             // Adiciona validação de CPF ao formulário
-            document.getElementById('cpf').addEventListener('blur', function () {
+            document.getElementById('cpf').addEventListener('blur', function() {
                 if (!validarCPF(this.value)) {
                     alert('CPF inválido');
                     this.value = '';
                 }
             });
-    
+
             // Função para validar CPF
             function validarCPF(cpf) {
                 cpf = cpf.replace(/[^\d]+/g, '');
@@ -377,26 +393,26 @@
                     return false;
                 return true;
             }
-    
+
             // Eventos de clique para os botões
-            $('#usersTable').on('click', '.view-btn', function () {
+            $('#usersTable').on('click', '.view-btn', function() {
                 var id = $(this).data('id');
                 viewUser(id);
             });
-    
-            $('#usersTable').on('click', '.edit-btn', function () {
+
+            $('#usersTable').on('click', '.edit-btn', function() {
                 var id = $(this).data('id');
                 editUser(id);
             });
-    
-            $('#usersTable').on('click', '.delete-btn', function () {
+
+            $('#usersTable').on('click', '.delete-btn', function() {
                 var id = $(this).data('id');
                 deleteUser(id);
             });
         });
     </script>
-    
-    
+
+
 
 </body>
 
