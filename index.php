@@ -26,7 +26,6 @@
                 'login_falha' => ['text-red-500', 'Falha no login. Verifique suas credenciais.'],
                 'cadastro_sucesso' => ['text-green-500', 'Cadastro realizado com sucesso!'],
                 'cadastro_falha' => ['text-red-500', 'Falha no cadastro. Tente novamente.'],
-                'usuario_nao_encontrado' => ['text-red-500', 'Usuário não encontrado!'],
                 'email_ou_cpf_existente' => ['text-red-500', 'Email ou CPF já cadastrados!'],
             ];
             if (isset($messages[$msg])) {
@@ -38,7 +37,7 @@
         ?>
 
         <!-- Formulário de Login -->
-        <form id="loginForm" class="space-y-4" action="processar_login.php" method="POST">
+        <form id="loginForm" class="space-y-4" action="controllers/LoginController.php" method="POST">
             <div>
                 <label for="loginEmail" class="block mb-1">Email</label>
                 <input type="email" id="loginEmail" name="email" class="w-full px-3 py-2 border rounded-md" required>
@@ -50,8 +49,8 @@
             <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600">Entrar</button>
         </form>
 
-        <!-- Formulário de Cadastro (inicialmente oculto) -->
-        <form id="registerForm" class="space-y-4 hidden" action="processar_cadastro.php" method="POST">
+        <!-- Formulário de Cadastro -->
+        <form id="registerForm" class="space-y-4 hidden" action="controllers/RegisterController.php" method="POST">
             <div>
                 <label for="registerName" class="block mb-1">Nome</label>
                 <input type="text" id="registerName" name="nome" class="w-full px-3 py-2 border rounded-md" required>
@@ -82,23 +81,6 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Função para remover mensagens após 5 segundos
-            function removeMessages() {
-                const messages = document.querySelectorAll('.status-message');
-                messages.forEach(message => {
-                    setTimeout(() => {
-                        message.style.opacity = '0';
-                        setTimeout(() => {
-                            message.remove();
-                        }, 500); // Tempo para animação de fade-out
-                    }, 5000); // Tempo até começar a animação de fade-out
-                });
-            }
-
-            // Chamar a função para remover mensagens se existirem
-            removeMessages();
-        });
         const loginTab = document.getElementById('loginTab');
         const registerTab = document.getElementById('registerTab');
         const loginForm = document.getElementById('loginForm');
@@ -172,3 +154,4 @@
         });
     </script>
 </body>
+</html>
