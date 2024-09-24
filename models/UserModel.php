@@ -67,4 +67,71 @@ class UserModel
             return false;
         }
     }
+    public function getUsers()
+    {
+        $sql = "SELECT id, nome, email, telefone, cpf FROM usuarios";
+        $result = $this->conn->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function deleteUser($id)
+    {
+        $sql = "DELETE FROM usuarios WHERE id = ?";
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("i", $id);
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
+            } else {
+                echo "Erro ao executar a consulta: " . $stmt->error;
+                $stmt->close();
+                return false;
+            }
+        } else {
+            echo "Erro na preparação da consulta: " . $this->conn->error;
+            return false;
+        }
+    }
+
+    public function getUserById($id)
+    {
+        $sql = "SELECT id, nome, email, telefone, cpf FROM usuarios WHERE id = ?";
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $stmt->store_result();
+            $stmt->bind_result($id, $nome, $email, $telefone, $cpf);
+
+            if ($stmt->num_rows > 0) {
+                $stmt->fetch();
+                $stmt->close();
+                return ['id' => $id, 'nome' => $nome, 'email' => $email, 'telefone' => $telefone, 'cpf' => $cpf];
+            } else {
+                $stmt->close();
+                return null;
+            }
+        } else {
+            echo "Erro na preparação da consulta: " . $this->conn->error;
+            return null;
+        }
+    }
+
+    public function updateUser($id, $nome, $email, $telefone, $cpf)
+    {
+        $sql = "UPDATE usuarios SET nome = ?, email = ?, telefone = ?, cpf = ? WHERE id = ?";
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ssssi", $nome, $email, $telefone, $cpf, $id);
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
+            } else {
+                echo "Erro ao executar a consulta: " . $stmt->error;
+                $stmt->close();
+                return false;
+            }
+        } else {
+            echo "Erro na preparação da consulta: " . $this->conn->error;
+            return false;
+        }
+    }
 }
